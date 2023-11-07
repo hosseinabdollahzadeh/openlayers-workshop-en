@@ -1,17 +1,24 @@
-import OSM from 'ol/source/OSM';
-import TileLayer from 'ol/layer/Tile';
-import {Map, View} from 'ol';
-import {fromLonLat} from 'ol/proj';
+import GeoJSON from 'ol/format/GeoJSON';
+import Map from 'ol/Map';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import View from 'ol/View';
+import Link from 'ol/interaction/Link';
 
-new Map({
+const map = new Map({
     target: 'map-container',
     layers: [
-        new TileLayer({
-            source: new OSM(),
+        new VectorLayer({
+            source: new VectorSource({
+                format: new GeoJSON(),
+                url: './data/countries.json',
+            }),
         }),
     ],
     view: new View({
-        center: fromLonLat([0, 0]),
+        center: [0, 0],
         zoom: 2,
     }),
 });
+
+map.addInteraction(new Link());
