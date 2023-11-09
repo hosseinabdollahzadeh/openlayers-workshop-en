@@ -8,6 +8,29 @@ import DragAndDrop from 'ol/interaction/DragAndDrop';
 import Modify from 'ol/interaction/Modify';
 import Draw from 'ol/interaction/Draw';
 import Snap from 'ol/interaction/Snap';
+import {Style, Fill, Stroke} from 'ol/style';
+import colormap from 'colormap';
+import {getArea} from 'ol/sphere';
+
+
+const min = 1e8; // the smallest area
+const max = 2e13; // the biggest area
+const steps = 50;
+const ramp = colormap({
+    colormap: 'blackbody',
+    nshades: steps,
+});
+
+function clamp(value, low, high) {
+    return Math.max(low, Math.min(value, high));
+}
+
+function getColor(feature) {
+    const area = getArea(feature.getGeometry());
+    const f = Math.pow(clamp((area - min) / (max - min), 0, 1), 1 / 2);
+    const index = Math.round(f * (steps - 1));
+    return ramp[index];
+}
 
 
 
@@ -31,7 +54,40 @@ const source = new VectorSource();
 
 const layer = new VectorLayer({
     source: source,
+    style: function (feature) {
+        return new Style({
+            fill: new Fill({
+                color: getColor(feature),
+            }),
+            stroke: new Stroke({
+                color: 'rgba(255,255,255,0.8)',
+            }),
+        });
+    },
 });
+
+
+// const layer = new VectorLayer({
+//     source: source,
+//     style: new Style({
+//         fill: new Fill({
+//             color: 'red',
+//         }),
+//         stroke: new Stroke({
+//             color: 'white',
+//         }),
+//     }),
+// });
+
+// const layer = new VectorLayer({
+//     source: source,
+//     style: function (feature, resolution) {
+//         const name = feature.get('name').toUpperCase();
+//         return name < 'N' ? style1 : style2; // assuming these are created elsewhere
+//     },
+// });
+
+
 map.addLayer(layer);
 
 map.addInteraction(new Link());
