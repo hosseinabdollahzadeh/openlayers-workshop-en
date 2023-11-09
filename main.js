@@ -7,6 +7,7 @@ import Link from 'ol/interaction/Link';
 import DragAndDrop from 'ol/interaction/DragAndDrop';
 import Modify from 'ol/interaction/Modify';
 import Draw from 'ol/interaction/Draw';
+import Snap from 'ol/interaction/Snap';
 
 
 
@@ -51,6 +52,12 @@ map.addInteraction(
 map.addInteraction(
     new Draw({
         type: 'Polygon',
+        source: source,
+    })
+);
+
+map.addInteraction(
+    new Snap({
         source: source,
     })
 );
