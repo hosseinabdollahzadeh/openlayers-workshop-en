@@ -8,6 +8,21 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import {circular} from 'ol/geom/Polygon';
 import Control from 'ol/control/Control';
+import {Fill, Icon, Style} from 'ol/style';
+import kompas from 'kompas';
+
+
+const style = new Style({
+    fill: new Fill({
+        color: 'rgba(0, 0, 255, 0.2)',
+    }),
+    image: new Icon({
+        src: './data/location-heading.svg',
+        imgSize: [27, 55],
+        rotateWithView: true,
+    }),
+});
+
 
 
 const map = new Map({
@@ -29,6 +44,7 @@ const layer = new VectorLayer({
 });
 map.addLayer(layer);
 
+layer.setStyle(style);
 navigator.geolocation.watchPosition(
     function (pos) {
         const coords = [pos.coords.longitude, pos.coords.latitude];
@@ -65,3 +81,28 @@ map.addControl(
         element: locate,
     })
 );
+
+function startCompass() {
+    kompas()
+        .watch()
+        .on('heading', function (heading) {
+            style.getImage().setRotation((Math.PI / 180) * heading);
+        });
+}
+
+if (
+    window.DeviceOrientationEvent &&
+    typeof DeviceOrientationEvent.requestPermission === 'function'
+) {
+    locate.addEventListener('click', function () {
+        DeviceOrientationEvent.requestPermission()
+            .then(startCompass)
+            .catch(function (error) {
+                alert(`ERROR: ${error.message}`);
+            });
+    });
+} else if ('ondeviceorientationabsolute' in window) {
+    startCompass();
+} else {
+    alert('No device orientation provided by device');
+}
