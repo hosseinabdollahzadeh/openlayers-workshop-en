@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>OpenLayers</title>
     <style>
         @import "node_modules/ol/ol.css";
@@ -13,34 +12,11 @@
             height: 100%;
             width: 100%;
             font-family: sans-serif;
-            background-color: #04041b;
         }
-        #tools {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-        }
-        #tools a {
-            display: inline-block;
-            padding: 0.5rem;
-            background: white;
-            cursor: pointer;
-        }
-        .locate {
-            top: 6em;
-            left: .5em;
-        }
-
     </style>
 </head>
 <body>
 <div id="map-container"></div>
-
-<div id="tools">
-    <a id="clear">Clear</a>
-    <a id="download" download="features.json">Download</a>
-</div>
-
 <script src="./main.js" type="module"></script>
 </body>
 </html>
