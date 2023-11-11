@@ -28,10 +28,5 @@ const layer = new TileLayer({
 new Map({
     target: 'map-container',
     layers: [layer],
-    view: new View({
-        projection: projection,
-        center: getCenter(sourceExtent),
-        extent: sourceExtent,
-        zoom: 1,
-    }),
+    view: source.getView(),
 });
